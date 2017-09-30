@@ -17,20 +17,6 @@ const languageString = {
 var fbApi;
 var friendsList;
 
-login({email: "EMAIL", password: "PASSWORD"}, (err, api) => {
-    if(err) return console.error(err);
-    
-    console.log('login successful');
-
-    fbApi = api;
-    fbApi.getFriendsList((err, data) => {
-        if(err) return console.error(err);
-        friendsList = data;
-        console.log('friends list');
-        console.log(friendsList);
-    });
-});
-
 function renderPrompt(promptName) {
     const speechOutput = this.t(promptName);
     this.response.speak(speechOutput).listen(speechOutput);
@@ -51,7 +37,21 @@ function renderPrompt(promptName) {
 
 const intentHandler = {
 	'LaunchRequest': function() {
-        renderPrompt.call(this, 'LAUNCH_PROMPT');
+        login({email: "EMAIL", password: "PASSWORD"}, (err, api) => {
+            if(err) return console.error(err);
+            
+            console.log('login successful');
+
+            fbApi = api;
+            fbApi.getFriendsList((err, data) => {
+                if(err) return console.error(err);
+                friendsList = data;
+                console.log('friends list');
+                console.log(friendsList);
+            
+                renderPrompt.call(this, 'LAUNCH_PROMPT');
+            });
+        });
     },
     'SendMessageIntent': function() {
         if (this.event.request.dialogState !== "COMPLETED") {
