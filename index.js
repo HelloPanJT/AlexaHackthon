@@ -14,6 +14,8 @@
 
 const Alexa = require('alexa-sdk');
 const questions = require('./question');
+const prompt = require('./prompt').Prompt;
+console.log(prompt.GREETING);
 //
 const ANSWER_COUNT = 4; // The number of possible answers per trivia question.
 const GAME_LENGTH = 5;  // The number of questions per trivia game.
@@ -97,14 +99,14 @@ const languageString = {
     },
 };
 
-const testHandler = {
+const launchRequestHandler = {
   'LaunchRequest': function() {
     // this.handler.state = GAME_STATES.START;
-    console.log('test handler is found');
+    //console.log('test handler is found');
     // this.emitWithState('StartGame', true);
-    speechOutput = userGaveUp ? '' : this.t('ANSWER_IS_MESSAGE');
-    speechOutput += speechOutputAnalysis + this.t('GAME_OVER_MESSAGE', currentScore.toString(), GAME_LENGTH.toString());
-    this.response.speak(speechOutput);
+    // speechOutput = userGaveUp ? '' : this.t('ANSWER_IS_MESSAGE');
+    // speechOutput += speechOutputAnalysis + this.t('GAME_OVER_MESSAGE', currentScore.toString(), GAME_LENGTH.toString());
+    this.response.speak(prompt.GREETING);
     this.emit(':responseReady');
   }
 }
@@ -395,7 +397,6 @@ exports.handler = function (event, context) {
     // alexa.appId = APP_ID;
     // To enable string internationalization (i18n) features, set a resources object.
     alexa.resources = languageString;
-    //alexa.registerHandlers(testHandler);//, startStateHandlers, triviaStateHandlers, helpStateHandlers);
-    alexa.registerHandlers(newSessionHandlers, startStateHandlers, triviaStateHandlers, helpStateHandlers);
+    alexa.registerHandlers(launchRequestHandler, startStateHandlers, triviaStateHandlers, helpStateHandlers);
     alexa.execute();
 };
